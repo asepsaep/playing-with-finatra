@@ -1,12 +1,14 @@
 import sbt.Keys._
 
-name := """finatra-mysql"""
+name := """dev-rest-finatra"""
 
 version := "1.0.0-SNAPSHOT"
 
 scalaVersion := "2.11.8"
 
 fork in run := true
+
+javaHome in run := Some(file("/usr/lib/jvm/java-8-openjdk/jre/"))
 
 javaOptions ++= Seq(
   "-Dlog.service.output=/dev/stderr",
@@ -31,19 +33,22 @@ assemblyJarName in assembly := s"${name.value}.jar"
 
 
 lazy val versions = new {
-  val finatra = "2.1.4"
+  val finatra = "2.1.6"
   val logback = "1.1.6"
   val guice = "4.0"
-  val getquill = "0.5.0"
+  val getquill = "0.6.0"
   val hikaricp = "2.4.5"
   val mysqljdbc = "5.1.37"
-  val twitterUtil = "6.33.0"
+  val psqljdbc = "9.4-1206-jdbc41"
+  val twitterUtil = "6.34.0"
   var twitterAsync = "516e77a"
   val typesafeConfig = "1.3.0"
+  val jodatime = "2.9.4"
+  val scalabcrypt = "2.6"
   val mockito = "1.9.5"
   val scalatest = "2.2.6"
   val specs2 = "2.3.12"
-  val swagger = "0.5.0"
+  val swagger = "0.5.1"
   val ficus = "1.2.3" // for scala friendly typesafe config
   val async = "0.9.5"
 }
@@ -56,13 +61,13 @@ libraryDependencies ++= Seq(
   "com.twitter.finatra" %% "finatra-httpclient" % versions.finatra,
 
   // quill
-  "io.getquill" %% "quill-finagle-mysql" % versions.getquill,
+//  "io.getquill" %% "quill-finagle-mysql" % versions.getquill,
+  "io.getquill" %% "quill-async" % versions.getquill,
+//  "io.getquill" %% "quill-jdbc" % versions.getquill,
 
   "com.zaxxer" % "HikariCP" % versions.hikaricp,
-  "mysql" % "mysql-connector-java" % versions.mysqljdbc,
-
-  // finagle oauth2
-  "com.github.finagle" %% "finagle-oauth2" % "0.1.6",
+//  "mysql" % "mysql-connector-java" % versions.mysqljdbc,
+  "org.postgresql" % "postgresql" % versions.psqljdbc,
 
   // twitter async
   "com.github.foursquare" % "twitter-util-async" % versions.twitterAsync,
@@ -70,12 +75,18 @@ libraryDependencies ++= Seq(
   // scala async
   "org.scala-lang.modules" %% "scala-async" %  versions.async,
 
+  // joda time
+  "joda-time" % "joda-time" % versions.jodatime,
+
   // swagger
   "com.github.xiaodongw" %% "swagger-finatra2" % versions.swagger,
 
   // typesafe config
   "com.typesafe" % "config" % versions.typesafeConfig,
   "com.iheart" %% "ficus" % versions.ficus, // for scala friendly typesafe config
+
+  // scala bcrypt
+  "com.github.t3hnar" % "scala-bcrypt_2.11" % versions.scalabcrypt,
 
   // others
   "ch.qos.logback" % "logback-classic" % versions.logback,
@@ -100,6 +111,5 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % versions.scalatest % "test",
   "org.specs2" %% "specs2" % versions.specs2 % "test"
 )
-
 
 Revolver.settings
